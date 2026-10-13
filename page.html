@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  White Paper Builder
+  Copyright (c) 2026 G. Michael Rapp. MIT License; see LICENSE.
+
+  Contains Paged.js (c) Coko Foundation, MIT License; the OSINT Citation Generator core,
+  MIT License; and IBM Plex fonts (c) IBM Corp., SIL Open Font License 1.1. See NOTICE.md.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Write a white paper and get print-ready pages: cover, contents, executive summary, numbered sections, footnotes, charts, tables, appendices, and page numbers. Runs entirely in your browser.">
+<title>White Paper Builder</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2315181B'/%3E%3Crect x='7' y='7' width='8' height='3' fill='%23C42A14'/%3E%3Crect x='7' y='13' width='18' height='2' fill='%23F4F5F2'/%3E%3Crect x='7' y='18' width='18' height='2' fill='%23F4F5F2'/%3E%3Crect x='7' y='23' width='12' height='2' fill='%23F4F5F2'/%3E%3C/svg%3E">
+<style id="fonts">
+/*FONTS*/
+</style>
+<style>
+:root {
+  --bg: #E9EBE7; --surface: #FFFFFF; --ink: #15181B; --muted: #565C61; --line: #CDD1CB; --soft: #F4F5F2;
+  --accent: #C42A14; --accent-ink: #FFFFFF; --accent-soft: #F7E3DF; --ok: #2A6637; --fix: #9E2219; --fix-bg: #FBE3E0; --check: #6F4B00; --check-bg: #FBEDC4; --note: #35566B; --note-bg: #E3EDF3;
+  --ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; --mono: 'Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #101213; --surface: #1A1D1F; --ink: #E6E8E4; --muted: #9CA3A7; --line: #30363A; --soft: #23272A; --accent: #F0806D; --accent-ink: #1A0B08; --accent-soft: #3A201B; --ok: #8FD19E; --fix: #FFA79C; --fix-bg: #3F1D1A; --check: #F2CD6B; --check-bg: #3A2E10; --note: #A9C9DB; --note-bg: #1C323E; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #101213; --surface: #1A1D1F; --ink: #E6E8E4; --muted: #9CA3A7; --line: #30363A; --soft: #23272A; --accent: #F0806D; --accent-ink: #1A0B08; --accent-soft: #3A201B; --ok: #8FD19E; --fix: #FFA79C; --fix-bg: #3F1D1A; --check: #F2CD6B; --check-bg: #3A2E10; --note: #A9C9DB; --note-bg: #1C323E; color-scheme: dark; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--ui); font-size: 14px; line-height: 1.45; }
+[hidden] { display: none !important; }
+#app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+#app .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--line); }
+#app .bar h1 { margin: 0 8px 0 0; font-size: 16px; font-weight: 650; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+#app .bar h1 .mk { width: 18px; height: 6px; background: var(--accent); display: inline-block; }
+#app .bar .ver { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--muted); }
+#app .bar .grow { flex: 1 1 auto; }
+#app .btn { font: inherit; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
+#app .btn:hover { border-color: var(--ink); }
+#app .btn:disabled { opacity: 0.5; cursor: default; }
+#app .btn.primary { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+#app .btn.small { font-size: 12px; padding: 3px 8px; }
+#app .btn.quiet { background: transparent; border-color: transparent; color: var(--accent); padding-inline: 6px; }
+#app .btn.danger { color: var(--fix); }
+#app .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+#app .seg label { position: relative; font-size: 12px; }
+#app .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+#app .seg span { display: block; padding: 3px 9px; }
+#app .seg input:checked + span { background: var(--soft); font-weight: 600; }
+#app .seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+#app .main { min-height: 0; display: grid; grid-template-columns: minmax(380px, 560px) minmax(0, 1fr); }
+#app .editor { min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--surface); border-right: 1px solid var(--line); }
+#app .tabs { display: flex; gap: 2px; padding: 8px 10px 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+#app .tabs button { font: inherit; font-size: 13px; padding: 7px 11px; border: 1px solid transparent; border-bottom: 0; border-radius: 5px 5px 0 0; background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; }
+#app .tabs button[aria-selected="true"] { background: var(--soft); border-color: var(--line); color: var(--ink); font-weight: 600; margin-bottom: -1px; border-bottom: 1px solid var(--soft); }
+#app .panes { min-height: 0; overflow: auto; background: var(--soft); }
+#app .pane { padding: 16px 18px 40px; display: flex; flex-direction: column; gap: 14px; }
+#app .pane h2 { margin: 4px 0 0; font-size: 13px; font-weight: 650; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+#app .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#app .field > label, #app .field .label { font-size: 12.5px; font-weight: 600; }
+#app .hint { margin: 0; font-size: 12px; color: var(--muted); }
+#app .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+#app input[type="text"], #app input[type="url"], #app textarea, #app select { font: inherit; font-size: 13.5px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px; width: 100%; min-width: 0; box-sizing: border-box; }
+#app textarea { resize: vertical; line-height: 1.5; }
+#app textarea.code { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; tab-size: 2; }
+#app textarea.big { min-height: 420px; }
+#app input[type="color"] { width: 44px; height: 30px; padding: 0 2px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+#app .check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; }
+#app .check input { margin-top: 2px; }
+#app .toolbar { display: flex; flex-wrap: wrap; gap: 4px; position: sticky; top: 0; z-index: 2; padding: 6px 0; background: var(--soft); }
+#app .toolbar .btn { font-size: 12px; padding: 3px 8px; }
+#app details.help { border: 1px solid var(--line); border-radius: 5px; background: var(--surface); padding: 8px 12px; font-size: 12.5px; }
+#app details.help summary { cursor: pointer; font-weight: 600; }
+#app details.help table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+#app details.help td { padding: 4px 6px; border-top: 1px solid var(--line); vertical-align: top; }
+#app details.help td:first-child { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+#app .card { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+#app .card .top { display: flex; align-items: center; gap: 8px; }
+#app .card .top .k { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+#app .card .top .grow { flex: 1; }
+#app .srcs { display: flex; flex-direction: column; gap: 8px; }
+#app .src { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); padding: 8px 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: start; }
+#app .src .key { font-family: var(--mono); font-size: 12.5px; width: 100%; padding: 3px 6px; }
+#app .src .txt { grid-column: 1 / -1; font-family: 'Plex Serif', Georgia, serif; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+#app .src .acts { display: flex; gap: 4px; }
+#app .filemsg { font-size: 12.5px; color: var(--ok); margin: 0; } .filemsg.bad { color: var(--fix); } .filemsg:empty { display: none; }
+#app .view { min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+#app .viewbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 8px 16px; border-bottom: 1px solid var(--line); background: var(--bg); font-size: 12.5px; color: var(--muted); }
+#app .viewbar .stat b { color: var(--ink); font-weight: 600; }
+#app .viewbar .busy { color: var(--accent); }
+#app .checks { margin: 0; padding: 0 16px; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+#app .checks li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 12.5px; color: var(--ink); }
+#app .checks li button { font: inherit; border: 0; background: none; padding: 0; text-align: left; color: inherit; cursor: pointer; }
+#app .checks li button:hover { text-decoration: underline; }
+#app .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 0; border-radius: 3px; text-align: center; margin-top: 1px; }
+#app .tag.fix { background: var(--fix-bg); color: var(--fix); } .tag.check { background: var(--check-bg); color: var(--check); } .tag.note { background: var(--note-bg); color: var(--note); }
+#app .checkwrap { padding: 8px 0 10px; border-bottom: 1px solid var(--line); background: var(--bg); max-height: 160px; overflow: auto; }
+#app .checkwrap:empty { display: none; }
+#app .scroller { min-height: 0; overflow: auto; padding: 20px 0 60px; }
+#pages { margin: 0 auto; }
+#pages .pagedjs_pages { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+#pages .pagedjs_page { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 6px 24px rgba(0, 0, 0, 0.08); }
+#stage { position: absolute; left: -20000px; top: 0; width: 900px; visibility: hidden; }
+#app .empty-view { margin: 40px auto; max-width: 420px; text-align: center; color: var(--muted); }
+#app .status { min-height: 1.4em; font-size: 12.5px; color: var(--ok); }
+#app .status.bad { color: var(--fix); }
+@media (max-width: 900px) {
+  #app { height: auto; }
+  #app .main { grid-template-columns: minmax(0, 1fr); }
+  #app .editor { border-right: 0; }
+  #app .panes { overflow: visible; }
+  #app .scroller { overflow-x: auto; }
+}
+@media print {
+  html, body { height: auto; background: none; }
+  #app { display: block; height: auto; }
+  #app .bar, #app .editor, #app .viewbar, #app .checkwrap, #stage, #app .empty-view { display: none !important; }
+  #app .main, #app .view { display: block; }
+  #app .scroller { overflow: visible; padding: 0; }
+  #pages { zoom: 1 !important; width: auto !important; }
+  #pages .pagedjs_pages { display: block; }
+  #pages .pagedjs_page { box-shadow: none; }
+}
+</style>
+<script>
+(function () { try { var t = JSON.parse(localStorage.getItem('wpb-theme-v1')); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {} })();
+</script>
+</head>
+<body>
+<div id="app">
+  <header class="bar">
+    <h1><span class="mk"></span>White Paper Builder <span class="ver">v1.0</span></h1>
+    <button type="button" class="btn primary" id="printBtn">Print or save as PDF</button>
+    <button type="button" class="btn" id="saveBtn">Save project</button>
+    <button type="button" class="btn" id="openBtn">Open project</button>
+    <button type="button" class="btn quiet" id="newBtn">New paper</button>
+    <input type="file" id="openPick" accept=".json,application/json" hidden>
+    <span class="status" id="status" role="status"></span>
+    <span class="grow"></span>
+    <span class="seg" role="radiogroup" aria-label="Editor theme">
+      <label><input type="radio" name="theme" id="themeAuto" value="auto" checked><span>Auto</span></label>
+      <label><input type="radio" name="theme" id="themeLight" value="light"><span>Light</span></label>
+      <label><input type="radio" name="theme" id="themeDark" value="dark"><span>Dark</span></label>
+    </span>
+  </header>
+
+  <div class="main">
+    <section class="editor" aria-label="Editor">
+      <div class="tabs" role="tablist" id="tabs">
+        <button type="button" role="tab" data-tab="paper" aria-selected="true">Paper</button>
+        <button type="button" role="tab" data-tab="summary" aria-selected="false">Summary</button>
+        <button type="button" role="tab" data-tab="body" aria-selected="false">Body</button>
+        <button type="button" role="tab" data-tab="visuals" aria-selected="false">Visuals</button>
+        <button type="button" role="tab" data-tab="appendix" aria-selected="false">Appendix</button>
+        <button type="button" role="tab" data-tab="sources" aria-selected="false">Sources</button>
+        <button type="button" role="tab" data-tab="back" aria-selected="false">Back page</button>
+      </div>
+      <div class="panes" id="panes">
+
+        <div class="pane" data-pane="paper">
+          <h2>Cover</h2>
+          <div class="field"><label for="m-title">Title</label><input type="text" id="m-title" data-k="meta.title" placeholder="The question or the claim, in ten words or fewer"></div>
+          <div class="field"><label for="m-subtitle">Subtitle</label><input type="text" id="m-subtitle" data-k="meta.subtitle" placeholder="The scope, the period, or the method"></div>
+          <div class="row">
+            <div class="field"><label for="m-author">Author</label><input type="text" id="m-author" data-k="meta.author" placeholder="G. Michael Rapp"></div>
+            <div class="field"><label for="m-date">Date</label><input type="text" id="m-date" data-k="meta.date" placeholder="October 2026"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="m-number">Paper number</label><input type="text" id="m-number" data-k="meta.number" placeholder="001"></div>
+            <div class="field"><label for="m-version">Version</label><input type="text" id="m-version" data-k="meta.version" placeholder="1.0"></div>
+            <div class="field"><label for="m-versionNote">Version note</label><input type="text" id="m-versionNote" data-k="meta.versionNote" placeholder="first edition"></div>
+          </div>
+          <div class="field"><label for="m-shortTitle">Short title, for the page footers</label><input type="text" id="m-shortTitle" data-k="meta.shortTitle" placeholder="Leave blank to use the title"></div>
+          <div class="field"><span class="label">Cover image</span>
+            <div class="row" style="grid-template-columns:auto auto 1fr;align-items:center"><button type="button" class="btn small" id="coverPick">Choose an image</button><button type="button" class="btn small quiet" id="coverClear">Remove</button><span class="hint" id="coverInfo"></span></div>
+            <input type="file" id="coverFile" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
+            <input type="text" id="m-coverCaption" data-k="meta.coverCaption" placeholder="Caption or credit for the cover image">
+            <p class="hint">A map, diagram, or photo, about 7 × 1.7 inches. Optional.</p></div>
+          <h2>Series and publisher</h2>
+          <div class="row">
+            <div class="field"><label for="m-series">Series label</label><input type="text" id="m-series" data-k="meta.series" placeholder="White paper series"></div>
+            <div class="field"><label for="m-masthead">Masthead on the cover</label><input type="text" id="m-masthead" data-k="meta.masthead" placeholder="White Paper"></div>
+          </div>
+          <div class="field"><label for="m-tagline">Topics beside the masthead, one per line</label><textarea id="m-tagline" data-k="meta.tagline" rows="3"></textarea></div>
+          <div class="row">
+            <div class="field"><label for="m-publisher">Publisher</label><input type="text" id="m-publisher" data-k="meta.publisher" placeholder="Ryan McBeth"></div>
+            <div class="field"><label for="m-site">Website on the cover</label><input type="text" id="m-site" data-k="meta.site" placeholder="ryanmcbeth.substack.com"></div>
+          </div>
+          <div class="field"><label for="m-url">Link to this paper, for "Cite as"</label><input type="url" id="m-url" data-k="meta.url" placeholder="https://ryanmcbeth.substack.com/p/..."></div>
+          <div class="field"><label for="m-aboutSeries">About the series (a box on the contents page)</label><textarea id="m-aboutSeries" data-k="aboutSeries" rows="3" placeholder="Two or three sentences: what the papers cover, who writes them, and how often a new one appears."></textarea></div>
+          <h2>Look</h2>
+          <div class="row" style="align-items:end">
+            <div class="field"><label for="m-accent">Accent color</label><input type="color" id="m-accent" data-k="meta.accent"></div>
+            <div class="field"><label for="m-paper">Page color</label><select id="m-paper" data-k="meta.paper"><option value="tinted">Off-white, as designed</option><option value="white">White, saves ink</option></select></div>
+          </div>
+          <label class="check"><input type="checkbox" id="m-sectionBreaks" data-k="meta.sectionBreaks"> <span>Start each numbered section on a new page</span></label>
+        </div>
+
+        <div class="pane" data-pane="summary" hidden>
+          <p class="hint">One page, about 300 words. Notes and citations work here too.</p>
+          <div class="field"><label for="s-lead">The problem in brief</label><textarea id="s-lead" data-k="summary.lead" class="code" rows="6" data-cite></textarea><p class="hint">What is happening, and why it will still matter in five years. A blank line starts a new paragraph.</p></div>
+          <div class="field"><label for="s-findings">Key findings, one per line</label><textarea id="s-findings" data-k="summary.findings" class="code" rows="5" data-cite></textarea><p class="hint">The main claim, the strongest evidence, and the consequence readers are most likely to miss. Numbered 01, 02, 03.</p></div>
+          <div class="field"><label for="s-recs">Recommendations, one per line</label><textarea id="s-recs" data-k="summary.recommendations" class="code" rows="4" data-cite></textarea><p class="hint">Who should act, and what they should do. Numbered R1, R2, R3.</p></div>
+        </div>
+
+        <div class="pane" data-pane="body" hidden>
+          <div class="toolbar" data-for="body"></div>
+          <textarea id="t-body" data-k="body" class="code big" spellcheck="true" data-cite aria-label="Body text"></textarea>
+          <details class="help" open><summary>How to write the body</summary><table id="helpTable"></table></details>
+        </div>
+
+        <div class="pane" data-pane="visuals" hidden>
+          <p class="hint">Charts, tables, timelines, key numbers, and images. Give each one a short name, then place it in the body or an appendix with [[name]] on a line of its own. Figures and tables are numbered in the order they appear.</p>
+          <div class="row" id="addVisual"></div>
+          <div id="visList" style="display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+
+        <div class="pane" data-pane="appendix" hidden>
+          <p class="hint">Each # heading starts Appendix A, B, C. ## headings are numbered A.1, A.2. [[rating-key]] adds the source rating key table.</p>
+          <div class="toolbar" data-for="appendix"></div>
+          <textarea id="t-appendix" data-k="appendix" class="code big" spellcheck="true" data-cite aria-label="Appendix text"></textarea>
+        </div>
+
+        <div class="pane" data-pane="sources" hidden>
+          <p class="hint">Cite sources from your OSINT Citation Generator lists. In the generator, save your list to a file; open that file here. Each source gets a short key. Write [@key] or [@key, p. 45] in the text: the first citation of a source prints in full, later ones in short form.</p>
+          <div class="row" style="grid-template-columns:auto auto 1fr;align-items:center">
+            <button type="button" class="btn" id="srcOpen">Open an OSINT list file</button>
+            <button type="button" class="btn quiet" id="srcAddTyped">Add a source by hand</button>
+            <span></span>
+          </div>
+          <input type="file" id="srcPick" accept=".json,application/json" multiple hidden>
+          <p class="filemsg" id="srcMsg" role="status"></p>
+          <div class="card" id="typedForm" hidden>
+            <div class="field"><label for="ty-key">Key</label><input type="text" id="ty-key" placeholder="beckley-unrivaled"></div>
+            <div class="field"><label for="ty-full">Full citation, as the first note should read</label><textarea id="ty-full" rows="3" placeholder='Michael Beckley, *Unrivaled* [Monograph] (Cornell University Press: 2018).'></textarea></div>
+            <div class="field"><label for="ty-short">Short form, for later notes</label><input type="text" id="ty-short" placeholder="Beckley, *Unrivaled*."></div>
+            <div class="row" style="grid-template-columns:auto auto 1fr"><button type="button" class="btn small primary" id="tySave">Add source</button><button type="button" class="btn small quiet" id="tyCancel">Cancel</button></div>
+            <p class="hint">Use *asterisks* for italics. A page number in [@key, p. 4] goes before the final period.</p>
+          </div>
+          <div class="srcs" id="srcList"></div>
+          <p class="hint" id="srcEmpty">No sources yet. You can still write notes by hand with ^[note text].</p>
+        </div>
+
+        <div class="pane" data-pane="back" hidden>
+          <label class="check"><input type="checkbox" id="b-include" data-k="back.include"> <span>Add the "About this paper" page at the end</span></label>
+          <div class="field"><label for="b-bio">Author biography</label><textarea id="b-bio" data-k="back.bio" rows="3" placeholder="Two sentences: background, and what qualifies the author to write this paper."></textarea></div>
+          <div class="field"><label for="b-history">Version history, one per line: version | date | change</label><textarea id="b-history" data-k="back.history" class="code" rows="3" placeholder="1.0 | October 13, 2026 | First publication"></textarea></div>
+          <div class="field"><label for="b-series">In this series, one per line: number | title | status or date</label><textarea id="b-series" data-k="back.series" class="code" rows="4" placeholder="001 | This paper's title | This paper"></textarea></div>
+          <div class="field"><label for="b-license">Reuse and licensing terms</label><input type="text" id="b-license" data-k="back.license" placeholder="© 2026 Ryan McBeth. All rights reserved."></div>
+          <p class="hint">The "Cite as" line is built from the title, author, number, version, publisher, date, and link under Paper.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" aria-label="Pages">
+      <div>
+        <div class="viewbar"><span class="stat" id="viewStats"></span><span class="busy" id="busy" hidden>Laying out pages…</span></div>
+        <ul class="checks checkwrap" id="checks" aria-label="Checks"></ul>
+      </div>
+      <div class="scroller" id="scroller"><div id="pages"></div><p class="empty-view" id="emptyView" hidden></p></div>
+    </section>
+  </div>
+</div>
+<div id="stage" aria-hidden="true"></div>
+
+<script type="text/plain" id="paper-css">/*PAPERCSS*/</script>
+<script id="pagedjs">/*PAGED*/</script>
+<script id="osint">/*OSINT*/</script>
+<script id="core">/*CORE*/</script>
+<script id="ui">/*UI*/</script>
+</body>
+</html>

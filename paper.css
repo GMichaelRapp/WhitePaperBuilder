@@ -1,0 +1,184 @@
+/*
+ * The printed paper. Paged.js reads this stylesheet and lays the paper out as US Letter
+ * pages. Measurements follow the white paper template: 8.5 x 11 in at 96 px per inch,
+ * 72 px side margins, a 136 px margin column and a 24 px gap, so text runs in one
+ * 512 px (5.3 in) column. Colors come from --accent and --paper, set per paper.
+ * Page furniture (header and footer text) is added by the page script, which knows the
+ * paper number and short title.
+ */
+@page {
+  size: 8.5in 11in;
+  margin: 112px 72px 92px 72px;
+  background: var(--wp-paper, #F4F5F2);
+  @footnote { margin: 0; padding: 0; }
+}
+@page :first {
+  margin: 48px 72px 48px 72px;
+  @top-left { content: none; border: 0; } @top-right { content: none; border: 0; }
+  @bottom-left { content: none; border: 0; } @bottom-right { content: none; border: 0; }
+}
+.pagedjs_page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+.wp { color: #15181B; font-family: 'Plex Serif', Georgia, serif; font-size: 16px; line-height: 26px; font-kerning: normal; font-variant-ligatures: common-ligatures; hyphens: manual; }
+.wp * { box-sizing: border-box; }
+.wp a { color: inherit; text-decoration: none; }
+.wp p a, .wp li a, .fn a { text-decoration: underline; text-decoration-thickness: 0.5px; text-underline-offset: 2px; }
+.wp b { font-weight: 600; }
+
+/* Everything in the text column sits 160 px in; the margin column holds labels. */
+.wp p, .wp ul, .wp ol, .wp blockquote, .wp h4.minor, .wp .lead { margin: 0 0 14px 160px; }
+.wp p { text-wrap: pretty; orphans: 2; widows: 2; }
+.wp ul, .wp ol { padding-left: 22px; }
+.wp li { margin: 0 0 6px; }
+.wp li::marker { font-family: 'Plex Mono', monospace; font-size: 13px; color: var(--wp-accent); }
+.wp blockquote { padding: 2px 0 2px 20px; border-left: 2px solid var(--wp-accent); font-size: 15px; line-height: 24px; }
+.wp .gut { font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: #565C61; }
+.missing { color: var(--wp-accent); font-family: 'Plex Mono', monospace; font-size: 13px; background: rgba(196, 42, 20, 0.08); }
+
+/* Headings. Each numbered section starts a new page, as in the template. */
+.wp h2 { margin: 0 0 24px; position: relative; padding-left: 160px; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 40px; line-height: 44px; letter-spacing: -0.01em; string-set: section attr(data-run); break-after: avoid; }
+.wp h2.brk, .wp h2.front { break-before: page; }
+.wp h2.sec:not(.brk) { margin-top: 44px; }
+.wp .wp-body > h2.sec:first-child { margin-top: 0; }
+.wp section.endbreak { break-after: page; }
+.wp h2 .num { position: absolute; left: 0; top: 0; font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 40px; line-height: 44px; color: var(--wp-accent); }
+.wp h2 .pre { display: block; font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 12px; line-height: 18px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wp-accent); }
+.wp h3.sub { margin: 28px 0 12px; position: relative; padding-left: 160px; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; break-after: avoid; }
+.wp h3.sub .num { position: absolute; left: 0; top: 0; font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 14px; line-height: 28px; color: var(--wp-accent); }
+.wp h3.plain { margin: 32px 0 16px 160px; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; break-after: avoid; }
+.wp h4.minor { margin-top: 20px; margin-bottom: 6px; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 17px; line-height: 24px; break-after: avoid; }
+.wp .pagebreak { break-after: page; }
+
+/* Margin note: sits in the margin column beside the block that follows it. */
+.wp aside.side { float: left; clear: left; width: 136px; margin: 4px 0 8px; padding-top: 8px; border-top: 1px solid #15181B; font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 18px; color: #565C61; }
+.wp aside.side .fn-call { color: var(--wp-accent); }
+
+/* Key point and labeled items. */
+.wp .keypoint { display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 24px; margin: 28px 0; padding: 16px 0; border-top: 3px solid var(--wp-accent); border-bottom: 1px solid #15181B; break-inside: avoid; }
+.wp .keypoint .gut { padding-top: 8px; font-weight: 700; letter-spacing: 0.14em; color: var(--wp-accent); }
+.wp .keypoint .kp { font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 26px; line-height: 32px; text-wrap: balance; }
+.wp .labeled { margin: 8px 0 20px; border-bottom: 1px solid #15181B; }
+.wp .labeled .li { display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 24px; break-inside: avoid; }
+.wp .labeled .gut { padding-top: 10px; font-weight: 700; font-size: 14px; line-height: 26px; letter-spacing: 0.04em; color: var(--wp-accent); }
+.wp .labeled .lt { padding: 10px 0; border-top: 1px solid #15181B; text-wrap: pretty; }
+
+/* Footnotes: one sequence through the paper, set at the foot of the page. */
+.fn { float: footnote; font-family: 'Plex Serif', Georgia, serif; font-size: 12px; line-height: 18px; font-weight: 400; font-style: normal; letter-spacing: 0; text-transform: none; color: #15181B; margin: 0 0 6px; overflow-wrap: anywhere; }
+.fn::footnote-call { content: none; }
+.fn::footnote-marker { content: none; }
+.pagedjs_footnote_inner_content .fn { position: relative; padding-left: 22px; }
+.pagedjs_footnote_inner_content .fn .fn-n { position: absolute; left: 0; top: 0; }
+a.fn[data-footnote-call] { display: inline; margin: 0; padding: 0; float: none; }
+.fn .fn-n { display: inline-block; min-width: 22px; font-family: 'Plex Mono', monospace; font-weight: 700; color: var(--wp-accent); }
+.wp .fn-call { font-family: 'Plex Mono', monospace; font-size: 11px; line-height: 0; color: var(--wp-accent); vertical-align: super; margin-left: 1px; }
+.pagedjs_footnote_area { position: relative; }
+.pagedjs_footnote_inner_content .fn { display: block; list-style: none; }
+.pagedjs_footnote_inner_content .fn::marker { content: none; }
+.pagedjs_footnote_content { margin-left: 160px; padding-top: 10px; border-top: 1px solid #15181B; }
+.pagedjs_footnote_content.pagedjs_footnote_empty { border-top: 0; padding-top: 0; }
+.pagedjs_footnote_area::before { content: 'Notes'; position: absolute; left: 0; top: 11px; font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: #565C61; }
+.pagedjs_footnote_area:has(.pagedjs_footnote_empty)::before { content: none; }
+
+/* Cover. */
+.wp .cover { position: relative; height: 950px; overflow: hidden; }
+.wp .cv-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #15181B; font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase; }
+.wp .cv-top .b { font-weight: 700; }
+.wp .cv-top .r { display: flex; align-items: center; gap: 12px; }
+.wp .cv-top .tag { padding: 4px 10px; background: var(--wp-accent); color: #FFFFFF; font-weight: 700; }
+.wp .cv-mast { margin-top: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.wp .cv-mast .word { margin-left: -4px; font-family: 'Plex Mono', monospace; font-weight: 700; line-height: 0.82; letter-spacing: 0.02em; white-space: nowrap; text-transform: uppercase; }
+.wp .cv-mast .topics { padding-bottom: 4px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 18px; letter-spacing: 0.12em; text-transform: uppercase; text-align: right; }
+.wp .cv-rule { margin-top: 20px; display: flex; align-items: center; }
+.wp .cv-rule span { width: 96px; height: 6px; background: var(--wp-accent); }
+.wp .cv-rule i { flex-grow: 1; height: 1px; background: #15181B; }
+.wp .cv-no { margin-top: 40px; font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 12px; line-height: 16px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wp-accent); }
+.wp .cv-title { margin: 12px 0 0; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 60px; line-height: 62px; letter-spacing: -0.01em; text-wrap: balance; }
+.wp .cv-sub { margin-top: 16px; font-style: italic; font-size: 22px; line-height: 31px; text-wrap: pretty; }
+.wp .cv-meta { margin-top: 28px; display: flex; gap: 48px; }
+.wp .cv-meta .k { font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: #565C61; }
+.wp .cv-meta .v { margin-top: 4px; font-size: 17px; line-height: 24px; }
+.wp .cv-img { margin: 32px 0 0; }
+.wp .cv-img img { display: block; width: 100%; max-height: 330px; object-fit: cover; border: 1px solid #15181B; }
+.wp .cv-img figcaption { margin-top: 6px; font-family: 'Plex Mono', monospace; font-size: 11px; line-height: 16px; color: #565C61; }
+.wp .cv-foot { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px solid #15181B; font-family: 'Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Contents. */
+.wp .contents h2, .wp .summary h2, .wp .back h2 { padding-left: 160px; }
+.wp .toc { list-style: none; margin: 4px 0 0; padding: 0; border-top: 1px solid #15181B; font-size: 16px; line-height: 22px; }
+.wp .toc li { display: grid; grid-template-columns: 136px minmax(0, 1fr) auto; column-gap: 24px; align-items: baseline; margin: 0; padding: 4px 0; border-bottom: 1px solid #9BA09A; }
+.wp .toc li:last-child { border-bottom-color: #15181B; }
+.wp .toc .num { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 13px; color: var(--wp-accent); }
+.wp .toc li.l2 .num { font-weight: 400; color: #565C61; }
+.wp .toc li.l2 a { padding-left: 20px; }
+.wp .toc a::after, .wp .lof a::after { content: target-counter(attr(href), page, decimal-leading-zero); position: absolute; right: 0; font-family: 'Plex Mono', monospace; font-size: 13px; }
+.wp .toc li, .wp .lof li { position: relative; padding-right: 36px; }
+.wp .lof { margin-top: 28px; display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 24px; break-inside: avoid; }
+.wp .lof .gut { padding-top: 6px; }
+.wp .lof ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid #15181B; font-size: 15px; line-height: 22px; }
+.wp .lof li { display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; align-items: baseline; margin: 0; padding: 4px 36px 4px 0; border-bottom: 1px solid #9BA09A; }
+.wp .lof li:last-child { border-bottom-color: #15181B; }
+.wp .lof .lab { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+.wp .series-box { margin-top: 28px; padding: 20px 24px; border: 1px solid #15181B; break-inside: avoid; }
+.wp .series-box .sb-h { margin-bottom: 8px; font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 12px; line-height: 16px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wp-accent); }
+.wp .series-box p { margin: 0 0 8px; font-size: 15px; line-height: 23px; }
+.wp .series-box p:last-child { margin-bottom: 0; }
+
+/* Executive summary. */
+.wp .summary .lead { font-size: 19px; line-height: 29px; margin-bottom: 16px; text-wrap: pretty; }
+.wp .findings, .wp .recs { display: flex; flex-direction: column; gap: 16px; }
+.wp .recs { gap: 0; border-bottom: 1px solid #15181B; }
+.wp .finding, .wp .rec { display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 24px; break-inside: avoid; }
+.wp .finding .gut { padding-top: 10px; font-weight: 700; font-size: 28px; line-height: 32px; letter-spacing: 0; color: var(--wp-accent); }
+.wp .finding .ft { padding-top: 12px; border-top: 1px solid #15181B; font-size: 17px; line-height: 27px; text-wrap: pretty; }
+.wp .rec .gut { padding-top: 10px; font-weight: 700; font-size: 16px; line-height: 26px; letter-spacing: 0; color: var(--wp-accent); }
+.wp .rec .rt { padding: 10px 0; border-top: 1px solid #15181B; text-wrap: pretty; }
+
+/* Figures, tables, timelines and key numbers. */
+.wp figure.vis { margin: 24px 0 28px; display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 24px; break-inside: avoid; }
+.wp figure.vis .gut { display: flex; flex-direction: column; gap: 8px; text-transform: none; letter-spacing: 0; }
+.wp figure.vis .vlabel { font-weight: 700; line-height: 26px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wp-accent); }
+.wp .vtitle { margin: 0; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 20px; line-height: 26px; text-wrap: balance; }
+.wp .vsub { margin-top: 4px; font-size: 14px; line-height: 20px; color: #565C61; }
+.wp .vbody > svg, .wp .vbody > table, .wp .vbody > ol, .wp .vbody > img, .wp .vbody > .vempty, .wp .vbody > .ratings { margin-top: 14px; }
+.wp svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+.wp img.vimg { display: block; max-width: 100%; max-height: 640px; border: 1px solid #15181B; }
+.wp figure.vis .vbody { grid-column: 2; min-width: 0; }
+.wp figure.vis .gut { grid-column: 1; grid-row: 1; }
+.wp figure.vis.wide { grid-template-columns: minmax(0, 1fr); }
+.wp figure.vis.wide .vbody { grid-column: 1; grid-row: 1; }
+.wp figure.vis.wide .gut { grid-row: 2; }
+.wp figure.vis.wide .gut { order: 2; flex-direction: row; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; }
+.wp .vempty { padding: 24px; border: 1px dashed #9BA09A; font-family: 'Plex Mono', monospace; font-size: 12px; color: #565C61; text-align: center; }
+.wp table.dtable { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 22px; }
+.wp .dtable th { padding: 9px 12px 9px 0; border-top: 2px solid #15181B; border-bottom: 1px solid #15181B; text-align: left; font-weight: 600; vertical-align: bottom; }
+.wp .dtable td { padding: 9px 12px 9px 0; border-bottom: 1px solid #9BA09A; vertical-align: top; }
+.wp .dtable tr:last-child td { border-bottom-color: #15181B; }
+.wp .dtable .n { text-align: right; font-family: 'Plex Mono', monospace; font-size: 14px; }
+.wp .dtable th:last-child, .wp .dtable td:last-child { padding-right: 0; }
+.wp .dtable tr.hot td { color: var(--wp-accent); font-weight: 600; }
+.wp .dtable .code { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 14px; }
+.wp .ratings { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; }
+.wp .rnote { margin: 12px 0 0; font-size: 14px; line-height: 21px; }
+.wp .timeline { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid #15181B; }
+.wp .timeline li { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: 16px; margin: 0; padding: 8px 0; border-bottom: 1px solid #9BA09A; font-size: 15px; line-height: 22px; }
+.wp .timeline .when { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 14px; color: var(--wp-accent); }
+.wp .stats-wrap { margin: 28px 0; break-inside: avoid; }
+.wp .stats-title { margin: 0 0 10px 160px; font-family: 'Plex Sans Cond', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 20px; line-height: 26px; }
+.wp .stats { display: grid; column-gap: 24px; }
+.wp .stat { padding-top: 12px; border-top: 3px solid #15181B; }
+.wp .stat .big { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 40px; line-height: 46px; }
+.wp .stat .what { margin-top: 6px; font-size: 14px; line-height: 20px; text-wrap: pretty; }
+.wp .stats-src { margin-top: 8px; font-family: 'Plex Mono', monospace; font-size: 11px; line-height: 16px; color: #565C61; }
+
+/* Back page. */
+.wp .brow { display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 24px; margin-bottom: 24px; break-inside: avoid; }
+.wp .brow .gut { font-weight: 700; line-height: 23px; letter-spacing: 0.08em; color: var(--wp-accent); }
+.wp .brow .bt { font-size: 15px; line-height: 23px; text-wrap: pretty; }
+.wp .brow .dtable { font-size: 14px; }
+.wp .series .sr { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; column-gap: 16px; padding: 6px 0; border-bottom: 1px solid #9BA09A; }
+.wp .series .sr:first-child { border-top: 1px solid #15181B; }
+.wp .series .sr:last-child { border-bottom-color: #15181B; }
+.wp .series .sw { font-family: 'Plex Mono', monospace; font-size: 12px; color: #565C61; }
+.wp .colophon { margin-top: 40px; padding: 20px 0 0 160px; border-top: 3px solid #15181B; font-family: 'Plex Mono', monospace; font-size: 12px; line-height: 20px; letter-spacing: 0.06em; text-transform: uppercase; break-inside: avoid; }
+.wp .colophon .b { font-weight: 700; font-size: 14px; }
+.wp .colophon .lic { margin-top: 12px; text-transform: none; letter-spacing: 0; font-family: 'Plex Serif', Georgia, serif; font-size: 13px; color: #565C61; }
