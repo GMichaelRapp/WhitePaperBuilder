@@ -41,7 +41,7 @@ eq(!!WP.importOsintList('{"x":1}', []).error, true, 'sources: refuses a file tha
 
 function paper(over) {
   const d = WP.defaults();
-  Object.assign(d.meta, { title: 'Test Paper', author: 'Jane Doe', date: 'October 2026', number: '007' });
+  Object.assign(d.meta, { title: 'Test Paper', author: 'Jane Doe', date: 'October 2026', number: '007', publisher: 'Example Press', site: 'example.org' });
   d.summary.lead = 'Lead.';
   d.sources = imp.sources.concat([{ key: 'typed', kind: 'typed', full: 'Example Agency, *Annual Report* (2024).', short: 'Example Agency, *Annual Report*.' }]);
   return Object.assign(d, over || {});
@@ -100,10 +100,13 @@ eq(/vempty/.test(WP.chartSvg({ kind: 'bar', data: '' }, '#C42A14')), true, 'char
 
 // ---- 5. Cover, back page, page furniture ----
 r = WP.render(paper({ body: '# A\n\nText.', back: { include: true, bio: 'Bio.', history: '1.0 | October 13, 2026 | First publication', series: '007 | Test Paper | This paper', license: 'CC BY 4.0' } }));
-eq(strip((r.html.match(/Cite as<\/div><div class="bt">([\s\S]*?)<\/div>/) || [])[1] || ''), 'Doe, Jane. “Test Paper.” White Paper No. 007, version 1.0. Ryan McBeth, October 2026. ryanmcbeth.substack.com.', 'back page: cite as');
+eq(strip((r.html.match(/Cite as<\/div><div class="bt">([\s\S]*?)<\/div>/) || [])[1] || ''), 'Doe, Jane. “Test Paper.” White Paper No. 007, version 1.0. Example Press, October 2026. example.org.', 'back page: cite as');
 eq(/@top-left\{content:"White paper No\. 007"/.test(r.vars) && /@bottom-left\{content:"Test Paper"/.test(r.vars), true, 'pages: header shows the paper number and footer the short title');
 eq(/@bottom-left\{content:"Say \\"hi\\""/.test(WP.render(paper({ meta: Object.assign(WP.defaults().meta, { title: 'T', shortTitle: 'Say "hi"' }) })).vars), true, 'pages: quotation marks in the short title are escaped');
 eq(WP.invertName('Jane Q. Doe') + '|' + WP.invertName('Doe, Jane') + '|' + WP.invertName('[Author name]'), 'Doe, Jane Q.|Doe, Jane|[Author name]', 'back page: author name inverted for the citation');
+
+eq(['Highly Reliable', 'Not Usually Reliable', 'Unknown', 'Confirmed', 'Probable', 'Possible', 'No basis for judging the claim either way.'].every((x) => WP.render(paper({ appendix: '# M\n\n[[rating-key]]' })).html.includes(x)), true, 'rating key: uses the OSINT Style Guide\'s grades and wording');
+eq(/Published by/.test(WP.render(Object.assign(paper(), { meta: Object.assign(WP.defaults().meta, { title: 'T' }) })).html), false, 'cover: no publisher line unless one is given');
 
 // ---- 6. Project files ----
 const d0 = paper({ body: '# A\n\nText.', visuals: [{ id: 'img', kind: 'image', image: 'data:image/png;base64,iVBORw0KGgo=' }, { id: 'bad', kind: 'image', image: 'javascript:alert(1)' }] });
