@@ -157,8 +157,12 @@ a.fn[data-footnote-call] { display: inline; margin: 0; padding: 0; float: none; 
 .wp .dtable th:last-child, .wp .dtable td:last-child { padding-right: 0; }
 .wp .dtable tr.hot td { color: var(--wp-accent); font-weight: 600; }
 .wp .dtable .code { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 14px; }
-.wp .ratings { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; }
-.wp .rnote { margin: 12px 0 0; font-size: 14px; line-height: 21px; }
+.wp .rnote { margin: 10px 0 0; font-size: 14px; line-height: 21px; }
+.wp figure.rating { break-inside: auto; }
+.wp .rating .dtable { margin-top: 16px; font-size: 13.5px; line-height: 19px; break-inside: avoid; }
+.wp .rating .dtable td { padding: 7px 10px 7px 0; }
+.wp .rating .dtable .mean { width: 170px; font-weight: 600; }
+.wp .rating .dtable th:first-child, .wp .rating .dtable td.code { width: 52px; }
 .wp .timeline { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid #15181B; }
 .wp .timeline li { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: 16px; margin: 0; padding: 8px 0; border-bottom: 1px solid #9BA09A; font-size: 15px; line-height: 22px; }
 .wp .timeline .when { font-family: 'Plex Mono', monospace; font-weight: 700; font-size: 14px; color: var(--wp-accent); }

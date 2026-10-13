@@ -17,9 +17,20 @@ var WP = (function () {
   var OSINT_TYPES = ['book', 'journal', 'news', 'chapter', 'web', 'report', 'social', 'video', 'archival', 'live', 'imagery', 'ai'];
   var OSINT_KEYS = ['lead', 'authors', 'editors', 'translators', 'contributors', 'title', 'titleStyle', 'transTitle', 'origLang', 'transBy', 'location', 'descType', 'descDetails',
     'accessNote', 'rating', 'publisher', 'date', 'dateKind', 'accessed', 'url', 'archiveUrl', 'archiveDate', 'locator', 'note', 'shortName', 'shortTitle'];
+  // Grades and their meanings in the words of the OSINT Style Guide, version 1.5.
   var RATING_KEY = {
-    rel: [['A', 'Completely reliable'], ['B', 'Usually reliable'], ['C', 'Fairly reliable'], ['D', 'Not usually reliable'], ['E', 'Unreliable'], ['F', 'Reliability cannot be judged']],
-    cred: [['1', 'Confirmed by other sources'], ['2', 'Probably true'], ['3', 'Possibly true'], ['4', 'Doubtful'], ['5', 'Improbable'], ['6', 'Truth cannot be judged']]
+    rel: [['A', 'Highly Reliable', 'Long track record, direct access, transparent method. Errors are rare and corrected.'],
+      ['B', 'Usually Reliable', 'Generally sound, but with known institutional framing, incentives, or occasional error.'],
+      ['C', 'Fairly Reliable', 'Mixed or short record. Sometimes right, sometimes not. Requires corroboration.'],
+      ['D', 'Not Usually Reliable', 'More often wrong than right, or method is opaque. Use only with strong corroboration.'],
+      ['E', 'Unreliable', 'Demonstrated pattern of error or deliberate distortion. Treat as a claim about the source, not the world.'],
+      ['F', 'Unknown', 'No basis on which to judge. Anonymous, new, or unattributable.']],
+    cred: [['1', 'Confirmed', 'Corroborated by independent sources or direct evidence.'],
+      ['2', 'Probable', 'Consistent with other reporting; not independently confirmed.'],
+      ['3', 'Possible', 'Plausible and not contradicted, but uncorroborated.'],
+      ['4', 'Doubtful', 'In tension with better-supported information.'],
+      ['5', 'Improbable', 'Contradicted by evidence, or internally incoherent.'],
+      ['6', 'Unknown', 'No basis for judging the claim either way.']]
   };
   var VISUAL_KINDS = {
     bar: { label: 'Column chart', fig: 'figure' },
@@ -388,7 +399,7 @@ var WP = (function () {
       meta: {
         series: 'White paper series', masthead: 'White Paper', tagline: 'Cybersecurity\nGeopolitics\nMilitary affairs',
         number: '001', date: '', version: '1.0', versionNote: 'first edition', title: '', subtitle: '', author: '', shortTitle: '',
-        publisher: 'Ryan McBeth', site: 'ryanmcbeth.substack.com', url: '', accent: '#C42A14', paper: 'tinted', coverImage: '', coverCaption: '', sectionBreaks: true
+        publisher: '', site: '', url: '', accent: '#C42A14', paper: 'tinted', coverImage: '', coverCaption: '', sectionBreaks: true
       },
       summary: { lead: '', findings: '', recommendations: '' },
       aboutSeries: '',
@@ -468,11 +479,13 @@ var WP = (function () {
     function ratingKey(n) {
       var label = 'Table ' + n;
       figs.push({ label: label, title: 'Source rating key', anchor: 'v-rating-key' });
-      var rows = function (list) { return list.map(function (r) { return '<tr><td class="code">' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join(''); };
-      return '<figure class="vis vis-table rating" id="v-rating-key"><figcaption class="gut"><div class="vlabel">' + label + '</div><div class="vsrc">Admiralty system, as used in the OSINT Style Guide.</div></figcaption><div class="vbody">'
-        + '<h4 class="vtitle">Source rating key</h4><div class="ratings"><table class="dtable"><thead><tr><th>Code</th><th>Reliability of source</th></tr></thead><tbody>' + rows(RATING_KEY.rel) + '</tbody></table>'
-        + '<table class="dtable"><thead><tr><th>Code</th><th>Credibility of information</th></tr></thead><tbody>' + rows(RATING_KEY.cred) + '</tbody></table></div>'
-        + '<p class="rnote">A note may carry a two-character rating: a letter for the reliability of the source and a number for the credibility of the information. B2 means a usually reliable source reporting information that is probably true.</p></div></figure>';
+      var rows = function (list) { return list.map(function (r) { return '<tr><td class="code">' + r[0] + '</td><td class="mean">' + r[1] + '</td><td>' + r[2] + '</td></tr>'; }).join(''); };
+      return '<figure class="vis vis-table rating" id="v-rating-key"><figcaption class="gut"><div class="vlabel">' + label + '</div><div class="vsrc">OSINT Style Guide, version 1.5: Source Reliability &amp; Credibility.</div></figcaption><div class="vbody">'
+        + '<h4 class="vtitle">Source rating key</h4>'
+        + '<p class="rnote">Ratings go inside a note\u2019s description bracket, as in [Social Media Post; C3]. Two separate things are rated. Letters A\u2013F rate the source: how much confidence its track record, access, and method warrant. Numbers 1\u20136 rate the information: how well the particular claim is corroborated, independent of who is making it.</p>'
+        + '<table class="dtable"><thead><tr><th>Grade</th><th>Reliability of the source</th><th>In practice</th></tr></thead><tbody>' + rows(RATING_KEY.rel) + '</tbody></table>'
+        + '<table class="dtable"><thead><tr><th>Grade</th><th>Credibility of the information</th><th>In practice</th></tr></thead><tbody>' + rows(RATING_KEY.cred) + '</tbody></table>'
+        + '</div></figure>';
     }
 
     // Body and appendix share one renderer; the appendix numbers A, A.1.

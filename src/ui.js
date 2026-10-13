@@ -10,7 +10,7 @@
   function monthYear() { var d = new Date(); return WP.MONTHS[d.getMonth()] + ' ' + d.getFullYear(); }
   function starter() {
     var d = WP.defaults();
-    Object.assign(d.meta, { title: '[Paper title: the question or the claim, in ten words or fewer]', subtitle: '[Subtitle: the scope, the period, or the method.]', author: '[Author name]', date: monthYear(), shortTitle: '[Short title]' });
+    Object.assign(d.meta, { title: '[Paper title: the question or the claim, in ten words or fewer]', subtitle: '[Subtitle: the scope, the period, or the method.]', author: '[Author name]', date: monthYear(), shortTitle: '[Short title]', publisher: '[Publisher]', site: '[Website]' });
     d.aboutSeries = '[Two or three sentences: what the papers cover, who writes them, and how often a new one appears.]\n\nEach paper is numbered, dated, and versioned. When a paper is revised, its version number changes and the change is logged on the back page.';
     d.summary = {
       lead: '[The problem in two sentences: what is happening, and why it will still matter in five years.]',
